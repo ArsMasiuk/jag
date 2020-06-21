@@ -60,11 +60,8 @@ void IScene::createStaticPopup(QRect rect, const QString &text, int textFlags,
 
 void IScene::removeBlock(PlaceInfo &pi, int row, int col)
 {
-  bool b1 = true;
-
   if (pi.place & Block2)
   {
-    b1 = false;
     pi.place = (pi.place & ~Block2) | Block1;
   }
   else

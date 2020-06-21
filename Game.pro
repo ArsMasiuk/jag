@@ -4,11 +4,11 @@
 QT += xml \
     opengl
 
-equals(QT_MAJOR_VERSION, 5) {
-    QT += x11extras
-}
-
 unix: {
+    equals(QT_MAJOR_VERSION, 5) {
+        QT += x11extras
+    }
+
     TARGET = ./bin/jag
     target.path = /usr/games/
     INSTALLS += target
@@ -24,22 +24,32 @@ unix: {
     appdata.path = /usr/share/appdata/
     appdata.files = dist/jag.appdata.xml
     INSTALLS += appdata
-    LIBS += -lXrandr
+    LIBS += -lXrandr -lX11
+
+    defined(USE_SDL) {
+        LIBS += -lSDL -lSDL_mixer
+    }
+
 }
+
 win32: {
     TARGET = ../bin/jag
+
+defined(USE_SDL) {
     INCLUDEPATH += winlibs/SDL-1.2.13/include/SDL \
         winlibs/SDL_mixer-1.2.8
     LIBS += -Lwinlibs/SDL-1.2.13/lib \
         -Lwinlibs/SDL_mixer-1.2.8/lib \
         -Lwinlibs/libs \
         -lSDL.dll
+}
+
     RC_FILE = res.rc
 }
-LIBS += -lX11 \
-    -lSDL \
-    -lSDL_mixer
+
+
 TEMPLATE = app
+
 SOURCES += main.cpp \
     gamewidget.cpp \
     gamescene.cpp \
@@ -71,6 +81,7 @@ SOURCES += main.cpp \
     consttools.cpp \
     gamexml.cpp \
     scaler.cpp
+
 HEADERS += gamewidget.h \
     gamescene.h \
     defines.h \
@@ -99,6 +110,9 @@ HEADERS += gamewidget.h \
     consttools.h \
     scaler.h \
     version.h
+
 RESOURCES += resources.qrc
+
 FORMS += menu.ui
+
 TRANSLATIONS += ./lang/jag_ru.ts

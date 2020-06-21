@@ -3,13 +3,14 @@
 
 #include <QDebug>
 
-GameSound* sndEngine = 0;
+GameSound* sndEngine = nullptr;
 
 GameSound::GameSound()
 {
   // load sounds
   QString sndpath = GameWidget::getResourcePath() + "sounds/";
 
+#ifdef USE_SDL
   loadSound(sndpath + "disappear.wav");
   loadSound(sndpath + "smallhammer.wav");
   loadSound(sndpath + "unblock.wav");
@@ -31,8 +32,15 @@ GameSound::GameSound()
   loadSound(sndpath + "bonus.wav");
   loadSound(sndpath + "newtool.wav");
 
+  // setup volume
+  setChannelVolume(MIX_MAX_VOLUME);
+  setMusicVolume(MIX_MAX_VOLUME/4);
+
   // music
   music = 0;
+#endif // SDL
+
+  // music
   musicEnabled = false;
   musicPlaying = false;
 
@@ -40,14 +48,12 @@ GameSound::GameSound()
   myTimer->setInterval(1000);
   connect(myTimer, SIGNAL(timeout()), this, SLOT(checkPlayMusic()));
   myTimer->stop();
-
-  // setup volume
-  setChannelVolume(MIX_MAX_VOLUME);
-  setMusicVolume(MIX_MAX_VOLUME/4);
 }
 
 GameSound::~GameSound()
 {
+#ifdef USE_SDL
+
   Mix_HaltMusic();
 
   for (int i = 0; i < m_sounds.count(); i++)
@@ -56,7 +62,12 @@ GameSound::~GameSound()
   }
 
   Mix_FreeMusic(music);
+
+#endif // SDL
 }
+
+
+#ifdef USE_SDL
 
 Mix_Chunk* GameSound::loadSound(const QString &filename)
 {
@@ -72,8 +83,13 @@ Mix_Chunk* GameSound::loadSound(const QString &filename)
   return sound;
 }
 
+#endif // SDL
+
+
 void GameSound::playSound(int index, int /*loops*/)
 {
+#ifdef USE_SDL
+
     if (index >= 0 && index < m_sounds.count())
     {
       Mix_Chunk *chunk = m_sounds.at(index);
@@ -91,6 +107,7 @@ void GameSound::playSound(int index, int /*loops*/)
       else
         Mix_Volume(channel, channel_vol);
     }
+#endif // SDL
 }
 
 void GameSound::stopSound(int /*index*/)
@@ -111,8 +128,11 @@ void GameSound::setChannelVolume(int val, int ch)
 //    for (int i = 0; i < 8; i++)
 //      Mix_Volume(i, val);
 //  else
+#ifdef USE_SDL
     Mix_Volume(ch, val);
 //
+#endif // SDL
+
 //  if (ch==-1)
     channel_vol = val;
 }
@@ -122,6 +142,8 @@ void GameSound::setChannelVolume(int val, int ch)
 
 void GameSound::loadMusic(const QString &filename)
 {
+#ifdef USE_SDL
+
   if (music)
     Mix_FreeMusic(music);
 
@@ -131,7 +153,7 @@ void GameSound::loadMusic(const QString &filename)
     qDebug() << filename << ": music not loaded: " << Mix_GetError();
     //fprintf(stderr, "Unable to load music file: %s\n", Mix_GetError());
   }
-
+#endif // SDL
 }
 
 void GameSound::playMusic()
@@ -141,6 +163,7 @@ void GameSound::playMusic()
   if (!musicEnabled)
     return;
 
+#ifdef USE_SDL
   int channel = Mix_PlayMusic(music, 0);
   if(channel == -1)
   {
@@ -149,12 +172,17 @@ void GameSound::playMusic()
   }
 
   Mix_VolumeMusic(music_vol);
+#endif // SDL
+
   myTimer->start();
 }
 
 void GameSound::stopMusic()
 {
+#ifdef USE_SDL
   Mix_HaltMusic();
+#endif // SDL
+
   musicPlaying = false;
   myTimer->stop();
 }
@@ -169,7 +197,10 @@ void GameSound::enableMusic(bool on)
   }
   else
   {
+#ifdef USE_SDL
     Mix_HaltMusic();
+#endif // SDL
+
     myTimer->stop();
     // do NOT set musicPlaying to false!
   }
@@ -177,14 +208,20 @@ void GameSound::enableMusic(bool on)
 
 void GameSound::checkPlayMusic()
 {
+#ifdef USE_SDL
   // just rewind
   if (!Mix_PlayingMusic())
     //playMusic();
     emit musicFinished();
+
+ #endif // SDL
 }
 
 void GameSound::setMusicVolume(int val)
 {
   music_vol = val;
+
+  #ifdef USE_SDL
   Mix_VolumeMusic(val);
+  #endif // SDL
 }

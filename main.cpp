@@ -15,6 +15,7 @@
 #include "displaywrapper.h"
 #include "scaler.h"
 
+#ifdef USE_SDL
 #ifdef Q_OS_WIN32
 #include "SDL.h"
 #include "SDL_mixer.h"
@@ -22,6 +23,7 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_mixer.h"
 #endif
+#endif //SDL
 
 #undef main
 
@@ -44,8 +46,9 @@ int main(int argc, char *argv[])
 #endif
 
   if (!QDir(resourcePath).exists()) {
-      QMessageBox::critical(0, QString("Files are missing"),
-                               QString("Cannot find data folder<br><b>%1</b><br>%2 will exit now.")
+      QMessageBox::critical(nullptr,
+                            QString("Files are missing"),
+                            QString("Cannot find data folder<br><b>%1</b><br>%2 will exit now.")
                                .arg(resourcePath, GameName),
                                QMessageBox::Close);
       a.quit();
@@ -55,6 +58,7 @@ int main(int argc, char *argv[])
     // display wrapper
     DisplayWrapper::init();
 
+#ifdef USE_SDL
     // SDL sound initialization
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         qDebug() << "Unable to initialize SDL: " << SDL_GetError();
@@ -74,6 +78,7 @@ int main(int argc, char *argv[])
         //fprintf(stderr, "Unable to initialize audio: %s\n", Mix_GetError());
         return -1;
     }
+#endif // SDL
 
     // prioritize thread
     QThread::currentThread()->setPriority(QThread::HighPriority);
@@ -100,9 +105,11 @@ int main(int argc, char *argv[])
 
     int result = a.exec();
 
+#ifdef USE_SDL
     // deinitialization of SDL
     Mix_CloseAudio();
     SDL_Quit();
+#endif // SDL
 
     // deinitialization of DisplayWrapper
     DisplayWrapper::restoreVideoMode();
