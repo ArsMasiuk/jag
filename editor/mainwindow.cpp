@@ -1,10 +1,11 @@
 #include <QFileDialog>
 #include <QPainter>
+#include <QDataStream>
 
 #include "mainwindow.h"
 #include "levelpack.h"
 
-static LevelPackDialog *d_levelpack = 0;
+static LevelPackDialog *d_levelpack = nullptr;
 
 //------------------------------------------
 MainWindow::MainWindow(QWidget *parent)
@@ -12,16 +13,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui.setupUi(this);
 
-    connect(ui.actionNew, SIGNAL(activated()), this, SLOT(fileNew()));
-    connect(ui.action_Open, SIGNAL(activated()), this, SLOT(fileOpen()));
-    connect(ui.action_Save, SIGNAL(activated()), this, SLOT(fileSave()));
-    connect(ui.actionSave_as, SIGNAL(activated()), this, SLOT(fileSaveAs()));
-    connect(ui.actionCreate_levelpack, SIGNAL(activated()), this, SLOT(fileCreateLevelPack()));
-    connect(ui.actionExtract_levelpack, SIGNAL(activated()), this, SLOT(fileExtractLevelPack()));
-    connect(ui.actionE_xit, SIGNAL(activated()), this, SLOT(fileExit()));
-    connect(ui.actionShow_properties, SIGNAL(activated()), this, SLOT(editShowProperties()));
+    connect(ui.actionNew, SIGNAL(triggered()), this, SLOT(fileNew()));
+    connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(fileOpen()));
+    connect(ui.actionSave, SIGNAL(triggered()), this, SLOT(fileSave()));
+    connect(ui.actionSave_as, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
+    connect(ui.actionCreate_levelpack, SIGNAL(triggered()), this, SLOT(fileCreateLevelPack()));
+    connect(ui.actionExtract_levelpack, SIGNAL(triggered()), this, SLOT(fileExtractLevelPack()));
+    connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(fileExit()));
+    connect(ui.actionShow_properties, SIGNAL(triggered()), this, SLOT(editShowProperties()));
     connect(ui.dockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(dockShowHide(bool)));
-    connect(ui.actionAbout, SIGNAL(activated()), this, SLOT(about()));
+    connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
 
     connect(ui.rbNoTarget, SIGNAL(toggled(bool)), this, SLOT(on_property_toggled(bool)));
     connect(ui.rbTarget1, SIGNAL(toggled(bool)), this, SLOT(on_property_toggled(bool)));
@@ -50,14 +51,14 @@ MainWindow::MainWindow(QWidget *parent)
     actionUndo->setShortcut(QKeySequence::Undo);
     actionRedo = new QAction(tr("Redo"), this);
     actionRedo->setShortcut(QKeySequence::Redo);
-    contextEdit = 0;
+    contextEdit = nullptr;
     updateEditActions();
 
-    connect(actionSelectAll, SIGNAL(activated()), this, SLOT(editSelectAll()));
-    connect(actionCopy, SIGNAL(activated()), this, SLOT(editCopy()));
-    connect(actionPaste, SIGNAL(activated()), this, SLOT(editPaste()));
-    connect(actionUndo, SIGNAL(activated()), this, SLOT(editUndo()));
-    connect(actionRedo, SIGNAL(activated()), this, SLOT(editRedo()));
+    connect(actionSelectAll, SIGNAL(triggered()), this, SLOT(editSelectAll()));
+    connect(actionCopy, SIGNAL(triggered()), this, SLOT(editCopy()));
+    connect(actionPaste, SIGNAL(triggered()), this, SLOT(editPaste()));
+    connect(actionUndo, SIGNAL(triggered()), this, SLOT(editUndo()));
+    connect(actionRedo, SIGNAL(triggered()), this, SLOT(editRedo()));
 
     ui.menu_Edit->addSeparator();
     ui.menu_Edit->addAction(actionUndo);

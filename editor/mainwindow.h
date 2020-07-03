@@ -34,10 +34,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
+private Q_SLOTS:
     void on_cbConcrete_stateChanged(int);
     void on_property_toggled(bool);
     void on_cbAppear_stateChanged(int);
