@@ -1,7 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui>
+#include <QMessageBox>
+#include <QMainWindow>
+#include <QList>
+#include <QPoint>
+
 #include "ui_mainwindow.h"
 #include "levelwidget.h"
 

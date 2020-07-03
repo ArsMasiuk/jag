@@ -1,8 +1,8 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-05-07T18:37:02
 # -------------------------------------------------
-QT += xml \
-    opengl
+
+QT += core widgets gui xml opengl
 
 unix: {
     equals(QT_MAJOR_VERSION, 5) {
@@ -34,6 +34,8 @@ unix: {
 
 win32: {
     TARGET = ../bin/jag
+
+    LIBS += -lUser32
 
 defined(USE_SDL) {
     INCLUDEPATH += winlibs/SDL-1.2.13/include/SDL \

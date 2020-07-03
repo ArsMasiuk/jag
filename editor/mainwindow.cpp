@@ -1,3 +1,6 @@
+#include <QFileDialog>
+#include <QPainter>
+
 #include "mainwindow.h"
 #include "levelpack.h"
 

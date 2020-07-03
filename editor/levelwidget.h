@@ -1,7 +1,9 @@
 #ifndef LEVELWIDGET_H
 #define LEVELWIDGET_H
 
-#include <QtGui>
+#include <QTableWidget>
+#include <QPoint>
+#include <QMouseEvent>
 
 class LevelWidget: public QTableWidget
 {

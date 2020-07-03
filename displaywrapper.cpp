@@ -8,7 +8,7 @@ DisplayWrapper DisplayWrapper::dwrapper;
 
 #ifdef Q_OS_WIN32
 
-DisplayWrapper::DisplayWrapper() : base_widget(0)
+DisplayWrapper::DisplayWrapper() : base_widget(nullptr)
 {
 }
 
@@ -29,7 +29,7 @@ void DisplayWrapper::dw_init(bool filter, int minWidth, int minHeight)
   modeNames.clear();
 
   // get current display
-  wchar_t *device = NULL;
+  wchar_t *device = nullptr;
   DISPLAY_DEVICE display_device;
   display_device.cb = sizeof(DISPLAY_DEVICE);
 
@@ -39,7 +39,7 @@ void DisplayWrapper::dw_init(bool filter, int minWidth, int minHeight)
     int screen = desktop.screenNumber(base_widget);
     if (screen >= 0)
     {
-      if (EnumDisplayDevices(NULL, screen, &display_device, 0))
+      if (EnumDisplayDevices(nullptr, screen, &display_device, 0))
       {
         device = display_device.DeviceName;
         //qDebug() << QString::fromWCharArray(device);
@@ -74,7 +74,7 @@ bool DisplayWrapper::dw_switchMode(int w, int h, int bpp, bool fs)
   DEVMODE originalMode;
   originalMode.dmSize = sizeof(originalMode);
 
-  EnumDisplaySettings(0,
+  EnumDisplaySettings(nullptr,
             ENUM_CURRENT_SETTINGS,
             &originalMode);
 
@@ -120,13 +120,13 @@ bool DisplayWrapper::dw_switchMode(int w, int h, int bpp, bool fs)
 
 void DisplayWrapper::dw_restoreMode()
 {
-  ChangeDisplaySettings(0,0);
+  ChangeDisplaySettings(nullptr,0);
 }
 
 VideoModeInfo DisplayWrapper::dw_currentMode()
 {
   DEVMODE devmode;
-  EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+  EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &devmode);
   VideoModeInfo mode;
   mode.width = devmode.dmPelsWidth;
   mode.height = devmode.dmPelsHeight;

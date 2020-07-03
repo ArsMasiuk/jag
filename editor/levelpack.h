@@ -1,10 +1,13 @@
 #ifndef LEVELPACK_H
 #define LEVELPACK_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
+#include <QString>
+
 #include "ui_levelpack.h"
 
-class LevelPackDialog : public QDialog {
+class LevelPackDialog : public QDialog
+{
     Q_OBJECT
 
 public:
